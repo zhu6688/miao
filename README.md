@@ -1,29 +1,6 @@
-# miao
-
-## Project setup
+### 笔记
 ```
-npm install
+    1. public文件夹用来存放静态文件
+    2. assets文件夹用来存放静态文件，小一些的图标，这里的文件可以转成base64文件
+    3.   
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
