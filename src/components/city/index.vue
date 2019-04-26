@@ -1,20 +1,24 @@
 <template>
     <div class="city_body">
         <div class="city_list">
-          <div class="city_hot">
-              <h2>热门城市</h2>
-              <ul class="clearfix">
-                  <li v-for="item in hotList" :key="item.id">{{ item.nm }}</li>
-              </ul>
-          </div>
-          <div class="city_sort" ref="city_sort">
-              <div v-for="city in cityList" :key="city.index">
-                  <h2>{{ city.index }}</h2>
-                  <ul>
-                    <li v-for="item in city.list" :key="item.id">{{ item.nm }}</li>
+          <Scroller ref="cityList">
+            <div>
+              <div class="city_hot">
+                  <h2>热门城市</h2>
+                  <ul class="clearfix">
+                      <li v-for="item in hotList" :key="item.id">{{ item.nm }}</li>
                   </ul>
               </div>
-          </div>
+              <div class="city_sort" ref="city_sort">
+                  <div v-for="city in cityList" :key="city.index">
+                      <h2>{{ city.index }}</h2>
+                      <ul>
+                        <li v-for="item in city.list" :key="item.id">{{ item.nm }}</li>
+                      </ul>
+                  </div>
+              </div>
+            </div>
+          </Scroller>
         </div>
         <div class="city_index">
           <ul>
@@ -89,8 +93,9 @@ export default {
     },
     handleToIndex(index){
       var h2 = this.$refs.city_sort.getElementsByTagName('h2');
-      this.$refs.city_sort.parentNode.scrollTop  = h2[index].offsetTop;
-      console.log(this.$refs.city_sort.parentNode);
+      //this.$refs.city_sort.parentNode.scrollTop  = h2[index].offsetTop;
+      //this.$refs.cityList 这个得到的就是组件的对象，那么它下面的方法就能用
+      this.$refs.cityList.toScrollTop(-h2[index].offsetTop);
     }
   }
 }

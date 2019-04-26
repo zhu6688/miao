@@ -11,7 +11,8 @@ Vue.filter('setWH',(url,arg)=>{
   return url.replace(/w\.h/,arg);
 })
 
-
+import Scroller from '@/components/scroller';
+Vue.component('Scroller',Scroller);
 
 
 

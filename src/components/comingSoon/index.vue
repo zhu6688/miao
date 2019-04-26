@@ -1,27 +1,28 @@
 <template>
     <div class="movie_body">
-        <div class="wrapper">
-            <ul>
-                <li v-for="item in comingList" :key="item.id">
-                    <div class="pic_show">
-                        <img :src="item.img | setWH('120.180')">
-                    </div>
-                    <div class="info_list">
-                        <h2>{{item.nm}}</h2>
-                        <p>
-                            <span>{{item.wish}}</span> 人想看
-                        </p>
-                        <p>{{item.star}}</p>
-                        <p>{{item.showInfo}}</p>
-                    </div>
-                    <div class="btn_pre">预售</div>
-                </li>
-            </ul>
-        </div>
+      <div class="wrapper" ref="wrapper">
+        <ul>
+          <li v-for="item in comingList" :key="item.id">
+              <div class="pic_show">
+                  <img :src="item.img | setWH('120.180')">
+              </div>
+              <div class="info_list">
+                  <h2>{{item.nm}}</h2>
+                  <p>
+                      <span>{{item.wish}}</span> 人想看
+                  </p>
+                  <p>{{item.star}}</p>
+                  <p>{{item.showInfo}}</p>
+              </div>
+              <div class="btn_pre">预售</div>
+          </li>
+      </ul>
+      </div>
     </div>
 </template>
 
 <script>
+import BScroll from 'better-scroll';
 export default {
     name:"comingSoon",
     data(){
@@ -34,6 +35,9 @@ export default {
         let msg = res.data.msg;
         if(msg==='ok'){
           this.comingList = res.data.data.comingList;
+          this.$nextTick(()=>{
+            new BScroll(this.$refs.wrapper,{});
+          })
         }
       })
     }
