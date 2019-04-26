@@ -2,17 +2,17 @@
     <div class="movie_body">
         <div class="wrapper">
             <ul>
-                <li>
+                <li v-for="item in comingList" :key="item.id">
                     <div class="pic_show">
-                        <img src="http://p0.meituan.net/128.180/movie/84096cd4b98c929c5959ac99a90efb15587032.jpg" alt="">
+                        <img :src="item.img | setWH('120.180')">
                     </div>
                     <div class="info_list">
-                        <h2>撞死了一只羊</h2>
+                        <h2>{{item.nm}}</h2>
                         <p>
-                            <span>7762</span> 人想看
+                            <span>{{item.wish}}</span> 人想看
                         </p>
-                        <p>主演: 金巴,更登彭措,索朗旺姆</p>
-                        <p>2019-04-26上映</p>
+                        <p>{{item.star}}</p>
+                        <p>{{item.showInfo}}</p>
                     </div>
                     <div class="btn_pre">预售</div>
                 </li>
@@ -23,7 +23,20 @@
 
 <script>
 export default {
-    name:"comingSoon"
+    name:"comingSoon",
+    data(){
+      return {
+        comingList:[]
+      }
+    },
+    mounted(){
+      this.axios.get('/api/movieComingList?cityId=10').then(res=>{
+        let msg = res.data.msg;
+        if(msg==='ok'){
+          this.comingList = res.data.data.comingList;
+        }
+      })
+    }
 }
 </script>
 

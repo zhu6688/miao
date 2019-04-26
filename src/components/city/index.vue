@@ -1,37 +1,98 @@
 <template>
     <div class="city_body">
         <div class="city_list">
-            <div class="wrapper">
-                <div>
-                    <div class="city_hot">
-                        <h2>热门城市</h2>
-                        <ul class="clearfix">
-                            <li>北京</li>
-                            <li>北京</li>
-                            <li>北京</li>
-                            <li>北京</li>
-                            <li>北京</li>
-                            <li>北京</li>
-                        </ul>
-                    </div>
-                    <div class="city_sort">
-                        <div>
-                            <h2>A</h2>
-                            <ul data-v-483a290e="" data-v-02c5313c=""><li data-v-483a290e="" data-v-02c5313c="">阿拉善盟</li><li data-v-483a290e="" data-v-02c5313c="">鞍山</li><li data-v-483a290e="" data-v-02c5313c="">安庆</li><li data-v-483a290e="" data-v-02c5313c="">安阳</li><li data-v-483a290e="" data-v-02c5313c="">阿坝</li><li data-v-483a290e="" data-v-02c5313c="">安顺</li><li data-v-483a290e="" data-v-02c5313c="">安康</li><li data-v-483a290e="" data-v-02c5313c="">阿勒泰</li><li data-v-483a290e="" data-v-02c5313c="">阿克苏</li><li data-v-483a290e="" data-v-02c5313c="">安吉</li><li data-v-483a290e="" data-v-02c5313c="">安丘</li><li data-v-483a290e="" data-v-02c5313c="">安岳</li><li data-v-483a290e="" data-v-02c5313c="">安平</li><li data-v-483a290e="" data-v-02c5313c="">安宁</li><li data-v-483a290e="" data-v-02c5313c="">安溪</li><li data-v-483a290e="" data-v-02c5313c="">安化</li><li data-v-483a290e="" data-v-02c5313c="">阿勒泰市</li><li data-v-483a290e="" data-v-02c5313c="">安福</li><li data-v-483a290e="" data-v-02c5313c="">阿荣旗</li><li data-v-483a290e="" data-v-02c5313c="">安陆市</li><li data-v-483a290e="" data-v-02c5313c="">安州区</li><li data-v-483a290e="" data-v-02c5313c="">阿城区</li></ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <div class="city_hot">
+              <h2>热门城市</h2>
+              <ul class="clearfix">
+                  <li v-for="item in hotList" :key="item.id">{{ item.nm }}</li>
+              </ul>
+          </div>
+          <div class="city_sort" ref="city_sort">
+              <div v-for="city in cityList" :key="city.index">
+                  <h2>{{ city.index }}</h2>
+                  <ul>
+                    <li v-for="item in city.list" :key="item.id">{{ item.nm }}</li>
+                  </ul>
+              </div>
+          </div>
         </div>
         <div class="city_index">
-            <ul data-v-483a290e=""><li data-v-483a290e="">A</li><li data-v-483a290e="">B</li><li data-v-483a290e="">C</li><li data-v-483a290e="">D</li><li data-v-483a290e="">E</li><li data-v-483a290e="">F</li><li data-v-483a290e="">G</li><li data-v-483a290e="">H</li><li data-v-483a290e="">J</li><li data-v-483a290e="">K</li><li data-v-483a290e="">L</li><li data-v-483a290e="">M</li><li data-v-483a290e="">N</li><li data-v-483a290e="">P</li><li data-v-483a290e="">Q</li><li data-v-483a290e="">R</li><li data-v-483a290e="">S</li><li data-v-483a290e="">T</li><li data-v-483a290e="">W</li><li data-v-483a290e="">X</li><li data-v-483a290e="">Y</li><li data-v-483a290e="">Z</li></ul>
+          <ul>
+            <li v-for="(item,index) in cityList" :key="item.index" @touchstart="handleToIndex(index)">{{item.index}}</li>
+          </ul>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    
+  name:'city',
+  data(){
+    return{
+      cityList:[],
+      hotList:[]
+    }
+  },
+  mounted(){
+    this.axios.get('/api/cityList').then(res=>{
+      if(res.data.msg==='ok'){
+        let cities = res.data.data.cities;
+        let {cityList,hotList} = this.formatCityList(cities);
+        this.cityList = cityList;
+        this.hotList = hotList;
+      }
+    })
+  },
+  methods:{
+    formatCityList(cities){
+      let cityList = [];
+      let hotList = [];
+      cities.forEach((item)=>{
+        if(item.isHot===1){
+          hotList.push(item)
+        }
+      })
+
+      // [{index:A,list:[{nm:'上海',id:12},...]}]
+      cities.forEach(item => {
+        let firstLetter = item.py.substring(0,1).toUpperCase();
+        if(toCom(firstLetter)){ // 添加新的index
+          cityList.push({index:firstLetter,list:[{nm:item.nm,id:item.id}]});
+        }else{ // 累加到已有index中
+          for(let j=0;j<cityList.length;j++){
+            if(cityList[j].index===firstLetter){
+              cityList[j].list.push({nm:item.nm,id:item.id})
+            }
+          }
+        }
+      });
+      cityList.sort((n1,n2)=>{
+        if(n1.index>n2.index){
+          return 1;
+        }
+        else{
+          return -1;
+        }
+      })
+      function toCom(firstLetter){
+        for(let i=0;i<cityList.length;i++){
+          if(cityList[i].index===firstLetter){
+            return false;
+          }
+        }
+        return true;
+      }
+      return {
+        cityList,
+        hotList
+      }
+    },
+    handleToIndex(index){
+      var h2 = this.$refs.city_sort.getElementsByTagName('h2');
+      this.$refs.city_sort.parentNode.scrollTop  = h2[index].offsetTop;
+      console.log(this.$refs.city_sort.parentNode);
+    }
+  }
 }
 </script>
 

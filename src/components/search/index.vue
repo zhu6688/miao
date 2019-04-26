@@ -3,21 +3,21 @@
         <div class="search_input">
             <div class="search_input_wrapper">
                 <i class="iconfont icon-sousuo"></i>
-                <input type="text">
+                <input type="text" v-model="message">
             </div>
         </div>
         <div class="search_result">
             <h3>电影/电视剧/综艺</h3>
             <ul>
-                <li>
+                <li v-for="item in movies" :key="item.id">
                     <div class="img">
-                        <img src="http://p0.meituan.net/128.180/movie/84096cd4b98c929c5959ac99a90efb15587032.jpg" alt="">
+                        <img :src="item.img | setWH('120.180')">
                     </div>
                     <div class="info">
-                        <p><span>老师·好</span><span>9.3</span></p>
-                        <p>Song of Youth</p>
-                        <p>剧情,喜剧</p>
-                        <p>2019-03-22</p>
+                        <p><span>{{ item.nm }}</span><span>{{ item.sc }}</span></p>
+                        <p>{{ item.enm }}</p>
+                        <p>{{ item.cat }}</p>
+                        <p>{{ item.rt }}</p>
                     </div>
                 </li>
             </ul>
@@ -27,7 +27,42 @@
 
 <script>
 export default {
-    name:'search'
+    name:'search',
+    data(){
+      return {
+        movies:[],
+        message:''
+      }
+    },
+    methods:{
+      cancelRequest(){
+        if(typeof this.source === 'function'){
+          this.source('zhongzhi');
+        }
+      }
+    },
+    watch:{
+      message(newVal){
+        this.cancelRequest();
+        this.axios.get('/api/searchList?cityId=10&kw='+newVal,{
+          cancelToken:new this.axios.CancelToken((c)=>{
+            this.source = c;
+          })
+        }).then(res=>{
+          let msg = res.data.msg;
+          let movies = res.data.data.movies;
+          if(msg && movies){
+            this.movies = res.data.data.movies.list;
+          }
+        }).catch((err)=>{
+          if(this.axios.isCancel(err)){
+            console.log('err',err.message);
+          }else{
+            console.log(err);
+          }
+        })
+      }
+    }
 }
 </script>
 

@@ -2,17 +2,15 @@
     <div class="movie_body">
         <div class="wrapper">
             <ul>
-                <li>
+                <li v-for="item in movieList" :key="item.id">
                     <div class="pic_show">
-                        <img src="http://p0.meituan.net/128.180/movie/84096cd4b98c929c5959ac99a90efb15587032.jpg" alt="">
+                        <img :src="item.img | setWH('128.180')">
                     </div>
                     <div class="info_list">
-                        <h2>撞死了一只羊</h2>
-                        <p>
-                            <span>7762</span> 人想看
-                        </p>
-                        <p>主演: 金巴,更登彭措,索朗旺姆</p>
-                        <p>2019-04-26上映</p>
+                        <h2>{{item.nm}} <em v-if="item.version" style="color:red;">3D</em> </h2>
+                        <p>观众评 <span class="grade">{{item.sc}}</span></p>
+                        <p>{{item.star}}</p>
+                        <p>{{item.showInfo}}</p>
                     </div>
                     <div class="btn_pre">预售</div>
                 </li>
@@ -23,7 +21,22 @@
 
 <script>
 export default {
-    name:"nowPlaying"
+    name:"nowPlaying",
+    data(){
+      return {
+        movieList:[]
+      }
+    },
+    mounted(){
+      this.axios.get('/api/movieOnInfoList?cityId=10').then(res=>{
+        console.log(res);
+        let msg = res.data.msg;
+        if(msg === 'ok'){
+          this.movieList = res.data.data.movieList;
+        }
+        console.log(this.movieList);
+      })
+    },
 }
 </script>
 
@@ -82,6 +95,11 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+#content .movie_body .info_list .grade{
+      font-weight: 700;
+    color: #faaf00;
+    font-size: 15px;
 }
 #content .movie_body .btn_mall,
 #content .movie_body .btn_pre {
