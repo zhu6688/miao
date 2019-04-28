@@ -16,7 +16,8 @@
                     <i class="iconfont icon-sanjiaoxing"></i>
                 </div>
             </div>
-            <div class="cinema_body">
+            <Loading v-if="isLoading"></Loading>
+            <div v-else class="cinema_body">
                 <div class="wrapper">
                     <ul>   
                         <li v-for="item in cinemasList" :key="item.id">
@@ -69,16 +70,23 @@ export default {
     },
     data(){
       return {
-        cinemasList:[]
+        cinemasList:[],
+        isLoading:true,
+        prevCityId:-1
       }
     },
-    mounted(){
-      this.axios.get('/api/cinemaList?cityId=10').then(res=>{
-        let msg = res.data.msg;
-        if(msg==='ok'){
-          this.cinemasList = res.data.data.cinemas;
-        }
-      })
+    activated(){
+        let cityId = this.$store.state.city.id;
+        if(this.prevCityId===cityId){return;}
+        this.isLoading = true;
+        this.axios.get('/api/cinemaList?cityId='+cityId).then(res=>{
+            let msg = res.data.msg;
+            if(msg==='ok'){
+                this.isLoading = false;
+            this.cinemasList = res.data.data.cinemas;
+            this.prevCityId  = cityId;
+            }
+        })
     }
 }
 </script>

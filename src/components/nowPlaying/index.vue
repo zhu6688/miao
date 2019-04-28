@@ -1,6 +1,7 @@
 <template>
     <div class="movie_body">
-        <Scroller :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
+        <Loading v-if="isLoading"></Loading>
+        <Scroller v-else :handleToScroll="handleToScroll" :handleToTouchEnd="handleToTouchEnd">
             <ul>
                 <li>{{pullDownMsg}}</li>
                 <li v-for="item in movieList" :key="item.id">
@@ -22,12 +23,15 @@
 
 <script>
 //import BScroll from 'better-scroll';
+
 export default {
     name:"nowPlaying",
     data(){
       return {
         movieList:[],
-        pullDownMsg:''
+        pullDownMsg:'',
+        isLoading:true,
+        prevCityId:-1
       }
     },
     methods:{
@@ -44,7 +48,7 @@ export default {
           this.axios.get('/api/movieOnInfoList?cityId=11').then(res=>{
             let msg = res.data.msg;
             if(msg === 'ok'){
-              this.pullDownMsg = '更新成功'
+              this.pullDownMsg = '更新成功';
               setTimeout(()=>{
                 this.movieList = res.data.data.movieList;
                 this.pullDownMsg = ''
@@ -54,10 +58,15 @@ export default {
         }
       }
     },
-    mounted(){
-      this.axios.get('/api/movieOnInfoList?cityId=10').then(res=>{
+    activated(){
+      let cityId = this.$store.state.city.id;
+      if(this.prevCityId===cityId){return;}
+      this.isLoading = true;
+      this.axios.get('/api/movieOnInfoList?cityId='+cityId).then(res=>{
         let msg = res.data.msg;
         if(msg === 'ok'){
+          this.isLoading = false;
+          this.prevCityId=cityId
           this.movieList = res.data.data.movieList;
           /* this.$nextTick(()=>{
             let scroll = new BScroll(this.$refs.wrapper,{

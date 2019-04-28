@@ -1,6 +1,7 @@
 <template>
     <div class="movie_body">
-      <div class="wrapper" ref="wrapper">
+      <Loading v-if="isLoading"></Loading>
+      <div v-else class="wrapper" ref="wrapper">
         <ul>
           <li v-for="item in comingList" :key="item.id">
               <div class="pic_show">
@@ -27,13 +28,21 @@ export default {
     name:"comingSoon",
     data(){
       return {
-        comingList:[]
+        comingList:[],
+        isLoading:true,
+        prevCityId:-1
       }
     },
-    mounted(){
-      this.axios.get('/api/movieComingList?cityId=10').then(res=>{
+    activated(){
+      let cityId = this.$store.state.city.id;
+      if(this.prevCityId===cityId){return;}
+      this.isLoading = true;
+      console.log(11);
+      this.axios.get('/api/movieComingList?cityId='+cityId).then(res=>{
         let msg = res.data.msg;
         if(msg==='ok'){
+          this.isLoading = false;
+          this.prevCityId = cityId;
           this.comingList = res.data.data.comingList;
           this.$nextTick(()=>{
             new BScroll(this.$refs.wrapper,{});
