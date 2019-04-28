@@ -1,6 +1,6 @@
 <template>
-    <header>
-        <h1>{{ title }}</h1>
+    <header id="header">
+        <slot></slot><h1>{{ title }}</h1>
     </header>
 </template>
 
@@ -30,5 +30,12 @@ header h1 {
     text-align: center;
     line-height: 50px;
     font-weight: 400;
+}
+header span{
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    font-size: 40px;
+    transform: translateY(-50%);
 }
 </style>

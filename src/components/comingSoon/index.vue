@@ -4,11 +4,11 @@
       <div v-else class="wrapper" ref="wrapper">
         <ul>
           <li v-for="item in comingList" :key="item.id">
-              <div class="pic_show">
+              <div class="pic_show" @touchstart="handleToDetail(item.id)">
                   <img :src="item.img | setWH('120.180')">
               </div>
               <div class="info_list">
-                  <h2>{{item.nm}}</h2>
+                  <h2 @touchstart="handleToDetail(item.id)">{{item.nm}}</h2>
                   <p>
                       <span>{{item.wish}}</span> 人想看
                   </p>
@@ -31,6 +31,11 @@ export default {
         comingList:[],
         isLoading:true,
         prevCityId:-1
+      }
+    },
+    methods:{
+      handleToDetail(id){
+        this.$router.push('/movie/detail/2/'+id)
       }
     },
     activated(){

@@ -19,6 +19,26 @@ export default {
             component:()=>import('@/components/search'),
         },
         {
+            path:'detail/1/:movieId', //1代表的是正在热映的详情页
+            components:{
+                default:()=>import('@/components/nowPlaying'),
+                detail:()=>import('@/views/movie/detail')
+            },
+            props:{
+                detail:true
+            }
+        },
+        {
+            path:'detail/2/:movieId',//2代表的是即将上映的详情页
+            components:{
+                default:()=>import('@/components/nowPlaying'),
+                detail:()=>import('@/views/movie/detail')
+            },
+            props:{
+                detail:true
+            }
+        },
+        {
             path:'/movie',
             redirect: 'nowPlaying'
         }

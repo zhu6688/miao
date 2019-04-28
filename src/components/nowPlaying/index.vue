@@ -5,11 +5,11 @@
             <ul>
                 <li>{{pullDownMsg}}</li>
                 <li v-for="item in movieList" :key="item.id">
-                    <div class="pic_show" @tap="handleToDetail">
+                    <div class="pic_show" @tap="handleToDetail(item.id)">
                         <img :src="item.img | setWH('128.180')">
                     </div>
                     <div class="info_list">
-                        <h2>{{item.nm}} <em v-if="item.version" style="color:red;">3D</em> </h2>
+                        <h2 @tap="handleToDetail(item.id)">{{item.nm}} <em v-if="item.version" style="color:red;">3D</em> </h2>
                         <p>观众评 <span class="grade">{{item.sc}}</span></p>
                         <p>{{item.star}}</p>
                         <p>{{item.showInfo}}</p>
@@ -35,8 +35,8 @@ export default {
       }
     },
     methods:{
-      handleToDetail(){
-        console.log('atb');
+      handleToDetail(id){
+        this.$router.push('/movie/detail/1/'+id)
       },
       handleToScroll(pos){
         if(pos.y>30){
