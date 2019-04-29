@@ -5,7 +5,7 @@
     </Header>
     <div id="content" class="contentDetail">
         <div class="detail_list">
-            <div class="detail_list_bg" style="background-image: url(http://p0.meituan.net/148.208/moviemachine/f7d2ad70eb79d6d9b8a197713db9b8c41711752.jpg);"></div>
+            <div class="detail_list_bg" :style="{ 'background-image':'url('+ detailMovie.img.replace(/w\.h/,'240.180') +')' }"></div>
             <div class="detail_list_filter"></div>
             <div class="detail_list_content">
                 <div class="detail_list_img">
@@ -47,13 +47,12 @@ export default {
     },
     data(){
         return {
-            detailMovie:{}
+            detailMovie:{},
         }
     },
     props:['movieId'],
     mounted(){
         this.axios.get('/api/detailmovie?movieId='+this.movieId).then(res=>{
-            console.log(res);
             let msg = res.data.msg;
             if(msg==='ok'){
                 this.detailMovie = res.data.data.detailMovie;
