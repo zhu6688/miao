@@ -1,4 +1,26 @@
 export default {
     path:'/mine',
-    component:()=>import('@/views/mine')
+    component:()=>import('@/views/mine'),
+    children:[
+        {
+            path:'center',
+            component:()=>import('@/views/mine/center.vue')
+        },
+        {
+            path:'login',
+            component:()=>import('@/components/login')
+        },
+        {
+            path:'register',
+            component:()=>import('@/components/register')
+        },
+        {
+            path:'findpassword',
+            component:()=>import('@/components/findpassword')
+        },
+        {
+            path:'/mine',
+            redirect:'center'
+        }
+    ]
 }

@@ -1,6 +1,7 @@
 <template>
     <div id="main">
         <Header title="我的"/>
+        <router-view></router-view>
         <TabBar />
     </div>
 </template>
